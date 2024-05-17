@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from .models import User, Patient
+from .models import User, Patient, DOCTOR, ORDINARY_USER
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, AddToPatientSerializer
 from rest_framework.response import Response
 from django.contrib.auth import login
@@ -112,6 +112,19 @@ class DoctorPatientListAPIView(APIView):
             patient_data.append(patient_info)
         return Response(patient_data)
 
+
+class DoctorListAPIView(APIView):
+    def get(self, request):
+        doctors = User.objects.filter(user_roles=DOCTOR)
+        serializer = UserSerializer(instance=doctors, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class PatientListAPIView(APIView):
+    def get(self, request):
+        patients = User.objects.filter(user_roles=ORDINARY_USER)
+        serializer = UserSerializer(instance=patients, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 
