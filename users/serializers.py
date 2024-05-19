@@ -86,6 +86,7 @@ class UserSerializer(serializers.ModelSerializer):
         return None
 
 
+
 class AddToPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient

@@ -46,12 +46,10 @@ class LoginAPIView(generics.CreateAPIView):
                 }, status=status.HTTP_401_UNAUTHORIZED
             )
 
-
 # class UserListCreateAPIView(generics.ListCreateAPIView):
 #     permission_classes = [permissions.AllowAny]
 #     serializer_class = UserSerializer
 #     queryset = User.objects.all()
-
 
 # class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 #     permission_classes = [permissions.AllowAny]
@@ -149,22 +147,23 @@ class DoctorPatientListAPIView(APIView):
         # Patientlar uchun serializer
         patient_data = []
         for patient in patients:
+            # Construct the full URL for the image
+            image_url = request.build_absolute_uri(patient.patient.image.url) if patient.patient.image else None
             patient_info = {
-                'id': patient.id,
-                'patient_id': patient.patient.id,
+                'patient_id': patient.id,
+                'id': patient.patient.id,
                 'username': patient.patient.username,
                 'first_name': patient.patient.first_name,
                 'last_name': patient.patient.last_name,
                 'created_at': patient.patient.created_at,
                 'complaint': patient.patient.complaint,
-                'image': patient.patient.image,
+                'image': image_url,
                 'phone_number': patient.patient.phone_number,
                 'region': patient.patient.region,
                 'recommendation': patient.patient.recommendation,
             }
             patient_data.append(patient_info)
         return Response(patient_data)
-
 
 class DoctorListAPIView(APIView):
     def get(self, request):
