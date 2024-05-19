@@ -34,7 +34,13 @@ class User(AbstractUser):
     user_roles = models.CharField(max_length=100, choices=USER_ROLES, default=ORDINARY_USER)
     phone_number = models.CharField(max_length=13, validators=[phone_regex], unique=True)
     region = models.CharField(max_length=255, choices=REGION)
+    doctor_direction = models.CharField(max_length=255, null=True, blank=True)
+    image = models.ImageField(upload_to='users-images/%Y/%m/%d/', default='default.svg', null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
+    complaint = models.TextField(null=True, blank=True)
+    recommendation = models.TextField(null=True, blank=True)
+    diagnostik_name = models.TextField(null=True, blank=True)
+    diagnostik_cure = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.username
@@ -72,7 +78,9 @@ class Patient(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender_patient')
     doctor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doctor_patient')
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patient')
-    created_at = models.DateTimeField(default=timezone.now)
+    status = models.BooleanField(default=False)
+    type = models.CharField(max_length=255)
+    created_at = models.DateTimeField()
 
     def __str__(self):
         return f'{self.sender} {self.doctor}'

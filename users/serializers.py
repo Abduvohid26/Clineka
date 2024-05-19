@@ -14,6 +14,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             'last_name',
             'phone_number',
             'user_roles',
+            'doctor_direction',
             'region',
             'created_at',
             'password',
@@ -22,7 +23,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             'first_name': {'required': True},
             'last_name': {'required': True},
             'phone_number': {'required': True},
-            'user_roles': {'required': False}
+            'user_roles': {'required': False},
+            'doctor_direction': {'required': False}
         }
 
     def create(self, validated_data):
@@ -56,11 +58,37 @@ class UserSerializer(serializers.ModelSerializer):
             'phone_number',
             'user_roles',
             'region',
-            'created_at'
+            'doctor_direction',
+            'image',
+            'created_at',
+            'complaint',
+            'recommendation',
+            'diagnostik_name',
+            'diagnostik_cure',
         )
+        extra_kwargs = {
+            'complaint': {'required': False},
+            'recommendation': {'required': False},
+            'diagnostik_name': {'required': False},
+            'diagnostik_cure': {'required': False},
+            'image': {'required': False},
+            'doctor_direction': {'required': False}
+        }
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image and hasattr(obj.image, 'url'):
+            return request.build_absolute_uri(obj.image.url)
+        return None
 
 
 class AddToPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ['id', 'sender', 'doctor', 'patient', 'created_at']
+        fields = ['id', 'sender', 'doctor', 'patient', 'status', 'type', 'created_at']
+        extra_kwargs = {
+            'created_at': {'required': True},
+        }
+
+
+
