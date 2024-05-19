@@ -5,7 +5,7 @@ from django.utils import timezone
 from .utils import phone_regex
 import random
 from rest_framework_simplejwt.tokens import RefreshToken
-ADMIN, DOCTOR, ORDINARY_USER = ('admin', 'doctor', 'ordinary_user')
+ADMIN, DOCTOR, ORDINARY_USER, DIAGNOS = ('admin', 'doctor', 'ordinary_user', 'diagnos')
 
 
 class User(AbstractUser):
@@ -13,6 +13,7 @@ class User(AbstractUser):
         (ADMIN, ADMIN),
         (DOCTOR, DOCTOR),
         (ORDINARY_USER, ORDINARY_USER),
+        (DIAGNOS, DIAGNOS)
     )
     REGION = (
         ('Toshkent', 'Toshkent'),
