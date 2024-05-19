@@ -1,0 +1,6 @@
+1.Web sahifangiz uchun foydalanuvchi (user) klassini tuzing. Klassning xususiyatlari sifatida odatda ijtimoiy tarmoqlar talab qiladigan ma'lumotlarni kiriting (ism, foydalanuvchi ismi, email, va hokazo)
+2.Klassga bir nechta metodlar qo'shing, jumladan get_info() metodi foydalanuvchi haqida yig'ilgan ma'lumotlarni chiroyli qilib chiqarsin (masalan: "Foydalanuvchi: alijon1994, ismi: Alijon Valiyev, email: alijon1994@gmail.com).
+3.Klassdan bir nechta obyektlar yarating va uning xususiyatlari va metodlariga murojat qiling.
+4.Voris klasslardan yana boshqa voris klass yaratib ko'ring. Misol uchun Foydalanuvchi klassidan Admin klassini yarating. 
+5.Python tilida class va obyekt nima? Misollar bilan tushuntiring, Python tilida inheritance (meros olish) nima , Polymorphism (polimorfizm) nima?
+6.Encapsulation (inkapsulyatsiya) nima va qanday amalga oshiriladi

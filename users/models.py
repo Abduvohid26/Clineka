@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-from .utils import phone_regex
+from .utils import phone_regex, validate_image
 import random
 from rest_framework_simplejwt.tokens import RefreshToken
 ADMIN, DOCTOR, ORDINARY_USER, DIAGNOS = ('admin', 'doctor', 'ordinary_user', 'diagnos')
@@ -36,12 +36,16 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=13, validators=[phone_regex], unique=True)
     region = models.CharField(max_length=255, choices=REGION)
     doctor_direction = models.CharField(max_length=255, null=True, blank=True)
-    image = models.ImageField(upload_to='users-images/%Y/%m/%d/', default='default.svg', null=True, blank=True)
+    image = models.ImageField(upload_to='users-images/%Y/%m/%d/',
+            default='default.svg', null=True, blank=True, validators=[validate_image])
     created_at = models.DateTimeField(default=timezone.now)
     complaint = models.TextField(null=True, blank=True)
     recommendation = models.TextField(null=True, blank=True)
     diagnostik_name = models.TextField(null=True, blank=True)
     diagnostik_cure = models.TextField(null=True, blank=True)
+    doctor_name = models.CharField(max_length=255, null=True, blank=True)
+    diagnos_file = models.FileField(upload_to='diagnostics-files/%Y/%m/%d/', null=True, blank=True)
+
 
     def __str__(self):
         return self.username
@@ -52,6 +56,9 @@ class User(AbstractUser):
         # Add custom claims to the access token
         access_token['user_roles'] = self.user_roles
         access_token['exp'] = int(access_token['exp'])
+        access_token['first_name'] = self.first_name
+        access_token['last_name'] = self.last_name
+
         return {
             'access_token': str(access_token),
             'refresh_token': str(refresh),
@@ -80,11 +87,7 @@ class Patient(models.Model):
     doctor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doctor_patient')
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patient')
     status = models.BooleanField(default=False)
-    type = models.CharField(max_length=255)
     created_at = models.DateTimeField()
 
     def __str__(self):
         return f'{self.sender} {self.doctor}'
-
-
-

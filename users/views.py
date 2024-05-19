@@ -47,16 +47,56 @@ class LoginAPIView(generics.CreateAPIView):
             )
 
 
-class UserListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
+# class UserListCreateAPIView(generics.ListCreateAPIView):
+#     permission_classes = [permissions.AllowAny]
+#     serializer_class = UserSerializer
+#     queryset = User.objects.all()
 
 
-class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
+# class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+#     permission_classes = [permissions.AllowAny]
+#     serializer_class = UserSerializer
+#     queryset = User.objects.all()
+
+class UserListCreateAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True, context={'request': request})
+        return Response(serializer.data)
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class UserRetrieveUpdateDestroyView(APIView):
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(user, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AddToPatientAPIView(APIView):
@@ -112,10 +152,15 @@ class DoctorPatientListAPIView(APIView):
             patient_info = {
                 'id': patient.id,
                 'patient_id': patient.patient.id,
-                'patient_username': patient.patient.username,
-                'patient_first_name': patient.patient.first_name,
-                'patient_last_name': patient.patient.last_name,
-                'patient_time': patient.patient.created_at,
+                'username': patient.patient.username,
+                'first_name': patient.patient.first_name,
+                'last_name': patient.patient.last_name,
+                'created_at': patient.patient.created_at,
+                'complaint': patient.patient.complaint,
+                'image': patient.patient.image,
+                'phone_number': patient.patient.phone_number,
+                'region': patient.patient.region,
+                'recommendation': patient.patient.recommendation,
             }
             patient_data.append(patient_info)
         return Response(patient_data)
@@ -124,7 +169,7 @@ class DoctorPatientListAPIView(APIView):
 class DoctorListAPIView(APIView):
     def get(self, request):
         doctors = User.objects.filter(user_roles=DOCTOR)
-        serializer = UserSerializer(instance=doctors, many=True)
+        serializer = UserSerializer(instance=doctors, many=True, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 

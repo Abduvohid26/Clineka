@@ -65,6 +65,8 @@ class UserSerializer(serializers.ModelSerializer):
             'recommendation',
             'diagnostik_name',
             'diagnostik_cure',
+            'doctor_name',
+            'diagnos_file',
         )
         extra_kwargs = {
             'complaint': {'required': False},
@@ -72,7 +74,9 @@ class UserSerializer(serializers.ModelSerializer):
             'diagnostik_name': {'required': False},
             'diagnostik_cure': {'required': False},
             'image': {'required': False},
-            'doctor_direction': {'required': False}
+            'doctor_direction': {'required': False},
+            'doctor_name': {'required': False},
+            'diagnos_file': {'required': False},
         }
 
     def get_image(self, obj):
@@ -85,7 +89,7 @@ class UserSerializer(serializers.ModelSerializer):
 class AddToPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ['id', 'sender', 'doctor', 'patient', 'status', 'type', 'created_at']
+        fields = ['id', 'sender', 'doctor', 'patient', 'status', 'created_at']
         extra_kwargs = {
             'created_at': {'required': True},
         }
