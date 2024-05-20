@@ -46,7 +46,6 @@ class User(AbstractUser):
     doctor_name = models.CharField(max_length=255, null=True, blank=True)
     diagnos_file = models.FileField(upload_to='diagnostics-files/%Y/%m/%d/', null=True, blank=True)
 
-
     def __str__(self):
         return self.username
 
